@@ -52,9 +52,9 @@ jobs:
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client=y" \
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Server=y" \
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Simple_Obfs=y" >> .config
-          # 18.06 SDK prerequisite check requires Python 2.x and rejects gcc 11+;
-          # our packages are C/Lua only, so skip the check as the SDK itself suggests
-          make defconfig FORCE=1
+          # 18.06 SDK prerequisite check demands Python 2.x and rejects gcc 11+,
+          # but our packages are C/Lua only; FORCE=1 is a no-op in 18.06, so
+          mkdir -p staging_dir/host && touch staging_dir/host/.prereq-build && make defconfig FORCE=1
 
       - name: Compile luci-app-ssr-plus
         working-directory: openwrt-sdk
