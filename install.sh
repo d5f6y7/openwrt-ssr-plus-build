@@ -1,10 +1,10 @@
 #!/bin/sh
-# SSR Plus+ 一键安装脚本（mipsel_24kc / OpenWrt 24.10）
-# 用法：wget -qO- https://cdn.jsdelivr.net/gh/d5f6y7/ssr-plus-install/install.sh | sh
+# SSR Plus+ 一键安装脚本（mipsel_24kc / OpenWrt 18.06 & 24.10，自动识别版本）
+# 用法：wget -qO- https://raw.githubusercontent.com/d5f6y7/openwrt-ssr-plus-build/main/install.sh | sh
 
 REPO="d5f6y7/openwrt-ssr-plus-build"
-TAG="mipsel_24kc-openwrt-24.10"
-TARBALL="ssr-plus-mipsel_24kc-openwrt-24.10.tar.gz"
+[ -f /etc/openwrt_release ] && . /etc/openwrt_release; OWRT_VER=$(echo "$DISTRIB_RELEASE" | cut -d. -f1,2); case "$OWRT_VER" in 18.06|24.10) TAG="mipsel_24kc-openwrt-${OWRT_VER}";; *) echo "错误：不支持的 OpenWrt 版本：${DISTRIB_RELEASE:-未知}（仅支持 18.06 / 24.10）"; exit 1;; esac
+TARBALL="ssr-plus-mipsel_24kc-openwrt-${OWRT_VER}.tar.gz"
 TMPDIR="/tmp/ssr-plus-ipk"
 
 echo "== SSR Plus+ 一键安装 =="
@@ -18,7 +18,7 @@ if ! opkg print-architecture 2>/dev/null | grep -q "mipsel_24kc"; then
   echo "警告：当前架构似乎不是 mipsel_24kc，继续安装可能失败。"
 fi
 
-echo "获取 release 信息..."
+echo "检测到 OpenWrt ${OWRT_VER}，获取 release 信息..."
 API_URL="https://api.github.com/repos/${REPO}/releases/tags/${TAG}"
 URL=$(wget -qO- "$API_URL" 2>/dev/null | grep -o '"browser_download_url": *"[^"]*\.tar\.gz"' | head -n 1 | sed 's/^"browser_download_url": *"//;s/"$//')
 
