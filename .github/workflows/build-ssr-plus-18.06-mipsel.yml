@@ -52,16 +52,18 @@ jobs:
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Client=y" \
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Libev_Server=y" \
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Simple_Obfs=y" >> .config
-          make defconfig
+          # 18.06 SDK prerequisite check requires Python 2.x and rejects gcc 11+;
+          # our packages are C/Lua only, so skip the check as the SDK itself suggests
+          make defconfig FORCE=1
 
       - name: Compile luci-app-ssr-plus
         working-directory: openwrt-sdk
         run: |
-          if make package/luci-app-ssr-plus/compile -j"$(nproc)"; then
+          if make package/luci-app-ssr-plus/compile -j"$(nproc)" FORCE=1; then
             echo "BUILD OK"
           else
             echo "parallel build failed, retrying single-threaded for logs"
-            make package/luci-app-ssr-plus/compile -j1 V=s
+            make package/luci-app-ssr-plus/compile -j1 V=s FORCE=1
           fi
           echo "---- built ipks ----"
           find bin/packages -name '*.ipk' | sort
