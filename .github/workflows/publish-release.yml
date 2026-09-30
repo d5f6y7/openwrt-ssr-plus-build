@@ -2,6 +2,8 @@ name: Publish SSR Plus+ release from build artifacts
 
 # Manual recovery: publish the ipks from an already-finished build run
 # without recompiling (e.g. when "Publish release" hit a GitHub rate limit).
+# The ipks are packed into a single tarball so publishing needs only a
+# handful of API calls.
 on:
   workflow_dispatch:
     inputs:
@@ -26,12 +28,19 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           path: ipks
 
-      - name: Collect ipks
+      - name: Pack SSR Plus+ ipks into one tarball
         run: |
           mkdir -p release
-          find ipks -name '*.ipk' -exec cp {} release/ \;
+          # Prefer the helloworld feed subdir when the artifact preserved paths;
+          # fall back to every ipk otherwise.
+          if find ipks -type d -name 'helloworld' | grep -q .; then
+            find ipks -type d -name 'helloworld' -exec sh -c 'cp "$1"/*.ipk release/ 2>/dev/null' _ {} \;
+          else
+            find ipks -name '*.ipk' -exec cp {} release/ \;
+          fi
           echo "ipk count: $(ls release/*.ipk | wc -l)"
-          ls release/
+          tar -czf ssr-plus-mipsel_24kc-openwrt-24.10.tar.gz -C release .
+          ls -lh ssr-plus-mipsel_24kc-openwrt-24.10.tar.gz
 
       - name: Publish release
         uses: softprops/action-gh-release@v2
@@ -49,5 +58,5 @@ jobs:
             ```sh
             wget -qO- https://cdn.jsdelivr.net/gh/d5f6y7/ssr-plus-install/install.sh | sh
             ```
-          files: release/*.ipk
+          files: ssr-plus-mipsel_24kc-openwrt-24.10.tar.gz
           fail_on_unmatched_files: true
