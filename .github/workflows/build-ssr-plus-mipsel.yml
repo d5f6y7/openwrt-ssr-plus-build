@@ -44,7 +44,13 @@ jobs:
           ./scripts/feeds update -a
           rm -rf feeds/packages/net/{naiveproxy,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,trojan,v2ray-core,v2ray-geodata,v2ray-plugin,xray-core,xray-plugin}
           ./scripts/feeds install -a
+          
           git clone --depth 1 -b dev https://github.com/fw876/helloworld.git package/helloworld
+                    # shadowsocks-rust 1.25.0 needs rustc 1.91 but the 24.10 SDK ships 1.90;
+                              # roll just this package back to the 1.24.0 snapshot (parent of the 1.25.0 bump)
+                                        git -C package/helloworld fetch --depth 1 origin 8663a89265b494e4b995129723c3f070522b80ed
+                                                  git -C package/helloworld checkout 8663a89265b494e4b995129723c3f070522b80ed -- shadowsocks-rust
+          
           printf '%s\n' \
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client=y" \
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server=y" \
