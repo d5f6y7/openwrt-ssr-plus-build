@@ -48,8 +48,7 @@ jobs:
           printf '%s\n' \
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client=y" \
             "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server=y" \
-            "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Simple_Obfs=y" \
-            "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_V2ray_Plugin=y" >> .config
+                   "CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Simple_Obfs=y" >> .config
           make defconfig
 
       - name: Compile luci-app-ssr-plus
@@ -86,7 +85,7 @@ jobs:
           name: SSR Plus+ for OpenWrt 24.10 (mipsel_24kc)
           body: |
             luci-app-ssr-plus (SSR Plus+) with Shadowsocks-Rust / ShadowsocksR-libev /
-            simple-obfs / v2ray-plugin, built with the official OpenWrt 24.10 SDK
+                        simple-obfs, built with the official OpenWrt 24.10 SDK
             for mipsel_24kc (ramips/mt7621, e.g. MT7621/MT7620 routers).
 
             Install on the router:
