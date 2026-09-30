@@ -56,7 +56,7 @@ jobs:
             One-click install on the router:
 
             ```sh
-            wget -qO- https://cdn.jsdelivr.net/gh/d5f6y7/ssr-plus-install/install.sh | sh
+            wget -qO- https://raw.githubusercontent.com/d5f6y7/openwrt-ssr-plus-build/main/install.sh | sh
             ```
           files: ssr-plus-mipsel_24kc-openwrt-24.10.tar.gz
           fail_on_unmatched_files: true
